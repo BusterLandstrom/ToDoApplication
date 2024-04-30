@@ -5,8 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ToDoApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="{x:Static SystemParameters.PrimaryScreenHeight}" Width="{x:Static SystemParameters.PrimaryScreenWidth}">
+        FontFamily="{StaticResource Nunito}"
+        Background="{StaticResource backgroundColor}"
+        Title="ToDo" Height="{x:Static SystemParameters.PrimaryScreenHeight}" Width="{x:Static SystemParameters.PrimaryScreenWidth}">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="+ New" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="25" Width="100" Height="45" Style="{DynamicResource RoundButton}" Background="{StaticResource selectableColor}" Foreground="{StaticResource textColor}"/>
+
+        <ListView Grid.Column="1" Grid.Row="1" FontSize="30" Background="{StaticResource widgetColor}" x:Name="ToDoList" Foreground="{StaticResource textColor}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Done" DisplayMemberBinding="{Binding Done}" Width="150"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="400"/>
+                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}" Width="850"/>
+                    <GridViewColumn Header="Steps" DisplayMemberBinding="{Binding Steps}" Width="136"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </Window>

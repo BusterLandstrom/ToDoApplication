@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ToDoApplication.Views"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}" Background="{DynamicResource widgetColor}"
              d:DesignWidth="1920"
              d:DesignHeight="1080">
@@ -26,7 +27,7 @@
 
         <!-- Task Name -->
         <Label Grid.Row="0" Content="Name:" FontSize="50" HorizontalAlignment="Right"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="50" Background="Transparent" BorderThickness="0" Text="ToDoName..."/>
+        <xctk:WatermarkTextBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="50" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.."/>
 
         <!-- Status -->
         <Label Grid.Row="1" Content="Status:" FontSize="50" HorizontalAlignment="Right"/>
@@ -45,7 +46,7 @@
 
         <!-- Description -->
         <Label Grid.Row="2" Content="Description:" FontSize="50" HorizontalAlignment="Right"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="5" TextWrapping="Wrap" FontSize="20" 
+        <xctk:WatermarkTextBox Grid.Row="2" Grid.Column="1" Margin="5" TextWrapping="Wrap" FontSize="20" 
                  SpellCheck.IsEnabled="True" Language="en-US" Style="{DynamicResource NoMouseOverTextBox}"
                  BorderBrush="{DynamicResource widgetColor}" Background="{DynamicResource selectableColor}"/>
 

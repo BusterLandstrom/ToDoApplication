@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <!-- TaskItem template -->
         <DataTemplate x:Key="TaskItemTemplate">
-            <Border Background="{DynamicResource selectableColor}" CornerRadius="5" Margin="5">
+            <Border Background="{DynamicResource widgetColor}" CornerRadius="5" Margin="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -53,11 +53,11 @@
         <!-- Task Entry Template -->
         <DataTemplate x:Key="TaskEntryTemplate">
             <Grid HorizontalAlignment="Stretch">
-                <Rectangle Fill="{DynamicResource selectableColor}" RadiusX="10" RadiusY="10"/>
+                <Rectangle Fill="{DynamicResource widgetColor}" RadiusX="10" RadiusY="10"/>
                 <TextBox Text="Enter new task name and press Enter..."
                      Foreground="{DynamicResource textColor}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                     FontSize="16" Margin="5" Background="Transparent"
+                     FontSize="16" Margin="10,5,5,5" Background="Transparent"
                      BorderThickness="0"/>
             </Grid>
         </DataTemplate>

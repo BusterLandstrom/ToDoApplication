@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ToDoApplication.ViewModels;
 
 namespace ToDoApplication.Views
 {
@@ -10,9 +11,20 @@ namespace ToDoApplication.Views
     /// </summary>
     public partial class ToDoListView : UserControl
     {
+        public IEnumerable<ToDoItemViewModel> ItemsSource
+        {
+            get { return (IEnumerable<ToDoItemViewModel>)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemsSource. This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ToDoItemViewModel>), typeof(ToDoListView), new PropertyMetadata(null));
+
+
         public ToDoListView()
         {
-
+            InitializeComponent();
         }
 
         // Remove these event handlers since they are now defined in XAML

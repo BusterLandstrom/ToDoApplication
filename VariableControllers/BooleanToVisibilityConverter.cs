@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ToDoApplication
+namespace ToDoApplication.VariableControllers
 {
     public class BooleanToVisibilityConverter : IValueConverter
     {

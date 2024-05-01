@@ -8,19 +8,19 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDoApplication
+namespace ToDoApplication.Items
 {
     public class AccountManager
     {
         private string appDataLocal { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/ToDo";
-        private string credentialsPath { get; set; } =  "/account.json";
+        private string credentialsPath { get; set; } = "/account.json";
         private string user { get; set; } = "None";
         private string password { get; set; } = "None";
         private string application { get; set; } = "None";
         private string connectionUri { get; set; } = "None";
         private bool success { get; set; } = false;
-        private string database {  get; set; } = "ToDo";
-        private List<string> databaseCollections { get; set; } = new List<string>(){ "Items", "Status" };
+        private string database { get; set; } = "ToDo";
+        private List<string> databaseCollections { get; set; } = new List<string>() { "Items", "Status" };
 
         public AccountManager()
         {
@@ -31,7 +31,7 @@ namespace ToDoApplication
             }
         }
 
-        public string GetItemCollection() 
+        public string GetItemCollection()
         {
             return databaseCollections[0];
         }
@@ -41,12 +41,12 @@ namespace ToDoApplication
             return databaseCollections[1];
         }
 
-        public string GetDatabase() 
+        public string GetDatabase()
         {
             return database;
         }
 
-        public bool SetAccount() 
+        public bool SetAccount()
         {
             try
             {
@@ -56,8 +56,8 @@ namespace ToDoApplication
                 if (accountJson.TryGetValue("password", out JToken passwordToken)) { password = Uri.EscapeDataString(passwordToken.ToString()); } else { throw new ItemNotFound("password"); }
                 if (accountJson.TryGetValue("mongodbpath", out JToken applicationToken)) { application = applicationToken.ToString(); } else { throw new ItemNotFound("mongodbpath"); }
                 return true;
-            } 
-            catch (FileNotFoundException e) 
+            }
+            catch (FileNotFoundException e)
             {
                 Debug.WriteLine($"The account file not found: ({e})");
                 return false;
@@ -72,7 +72,7 @@ namespace ToDoApplication
                 Debug.WriteLine($"The account file could not be opened: ({e})");
                 return false;
             }
-            catch (ItemNotFound e) 
+            catch (ItemNotFound e)
             {
                 Debug.WriteLine($"The item '{e.Item}' does not exist in the JSON file");
                 return false;

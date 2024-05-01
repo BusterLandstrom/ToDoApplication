@@ -22,6 +22,6 @@
         </Grid.RowDefinitions>
 
         <!-- Content Control to switch between views -->
-        <local1:ToDoListView Grid.Column="1" Grid.Row="1"/>
+        <local1:ToDoListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding ViewModel.Items}"/>
     </Grid>
 </Window>

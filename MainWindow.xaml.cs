@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
+using ToDoApplication.Items;
 using ToDoApplication.ViewModels;
 
 namespace ToDoApplication
@@ -40,7 +41,7 @@ namespace ToDoApplication
             var items = await repository.GetAllAsync();
             foreach (var item in items)
             {
-                ViewModel.Items.Add(new ToDoItemsViewModel
+                ViewModel.Items.Add(new ToDoItemViewModel
                 {
                     Name = item.Name,
                     Description = item.Description,

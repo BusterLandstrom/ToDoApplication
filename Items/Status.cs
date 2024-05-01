@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDoApplication
+namespace ToDoApplication.Items
 {
     public class Status
     {

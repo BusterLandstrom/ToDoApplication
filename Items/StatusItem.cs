@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ToDoApplication
+namespace ToDoApplication.Items
 {
     public class StatusItem
     {

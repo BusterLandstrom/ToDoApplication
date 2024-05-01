@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ToDoApplication.Views"
              xmlns:parent="clr-namespace:ToDoApplication"
+             xmlns:variables="clr-namespace:ToDoApplication.VariableControllers"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}"
              d:DesignWidth="1920"
              d:DesignHeight="1080">
@@ -56,24 +57,24 @@
                      Foreground="Gray"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      FontSize="16" Margin="5"
-                     BorderThickness="1" BorderBrush="Black"/>
+                     BorderThickness="1" BorderBrush="{StaticResource widgetColor}"/>
             </Grid>
         </DataTemplate>
+
+        <!-- Set up the TaskTemplateSelector -->
+        <variables:TaskTemplateSelector x:Key="TaskSelector"
+                                TaskItemTemplate="{StaticResource TaskItemTemplate}"
+                                TaskEntryTemplate="{StaticResource TaskEntryTemplate}"/>
     </UserControl.Resources>
     <Grid>
         <ListView ItemsSource="{Binding ToDoItems}" 
                   Background="Transparent" 
                   BorderBrush="Transparent"
                   Margin="20">
-            <!-- Empty item for adding new task -->
-            <ContentControl ContentTemplate="{StaticResource TaskEntryTemplate}" />
-
-            <!-- Task items template -->
-            <ListView.ItemTemplate>
-                <DataTemplate >
-                    <ContentControl ContentTemplate="{StaticResource TaskItemTemplate}" Content="{Binding}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
+            <!-- Set the ItemTemplateSelector -->
+            <ListView.ItemTemplateSelector>
+                <variables:TaskTemplateSelector/>
+            </ListView.ItemTemplateSelector>
         </ListView>
     </Grid>
 </UserControl>

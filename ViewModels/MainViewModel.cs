@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
-using ToDoApplication.ViewModels;
 
-namespace ToDoApplication
+namespace ToDoApplication.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {

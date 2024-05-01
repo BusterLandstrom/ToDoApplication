@@ -15,31 +15,26 @@
         <Style TargetType="UserControl" x:Key="WidgetTemplate">
 
             <!-- Variables -->
-
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-            
             <!-- Set default width -->
             <Setter Property="Width" Value="Auto"/>
             <!-- Set default height -->
             <Setter Property="Height" Value="Auto"/>
+            <!-- Forcing to always use same Font -->
+            <Setter Property="FontFamily" Value="{DynamicResource Nunito}"/>
 
             <!-- Template -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="UserControl">
-                        <Border Background="{DynamicResource widgetColor}" CornerRadius="10"
-                        Width="{Binding ActualWidth, ElementName=MainGrid}"
-                        Height="{Binding ActualHeight, ElementName=MainGrid}">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
                             <ContentPresenter Margin="10"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
-
-
 
     <!-- 
         Custom Styles:
@@ -55,6 +50,15 @@
             <Setter Property="Background" Value="{DynamicResource selectableColor}"/>
             <Setter Property="BorderBrush" Value="{x:Null}"/>
         </Style>
+
+        <Style x:Key="RoundTextBox" TargetType="{x:Type TextBox}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
 
         <!-- GridViewColumnHeader Style -->
         <Style x:Key="CustomHeader" TargetType="GridViewColumnHeader">
@@ -79,20 +83,47 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
-    <!-- 
+
+
+        <!-- Removes mouse over and click functionality for textbox -->
+        <Style TargetType="TextBox" x:Key="NoMouseOverTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+
+        <!-- 
         Custom Variables:
     -->
 
         <!-- Colors -->
-        <SolidColorBrush x:Key="backgroundColor" Color="#DEE2D6"/>
+        <SolidColorBrush x:Key="backgroundColor" Color="#FA7E61"/>
         <SolidColorBrush x:Key="textColor" Color="#040F0F"/>
-        <SolidColorBrush x:Key="widgetColor" Color="#BBDDCF"/>
-        <SolidColorBrush x:Key="selectableColor" Color="#DE6449"/>
+        <SolidColorBrush x:Key="widgetColor" Color="#DEE2D6"/>
+        <SolidColorBrush x:Key="selectableColor" Color="#BBDDCF"/>
         
         <!-- FontFamily -->
-        <FontFamily x:Key="Nunito">Assets/Fonts/Nunito.ttf</FontFamily>
+        <FontFamily x:Key="Nunito">Assets\Fonts\Nunito.ttf#Nunito</FontFamily>
 
         <variable:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Application.Resources>

@@ -5,7 +5,14 @@ using ToDoApplication.Items;
 
 namespace ToDoApplication.ViewModels
 {
-    public class ToDoItemViewModel : INotifyPropertyChanged
+
+    public interface IToDoViewModel
+    {
+        // Define common properties or methods here
+    }
+
+
+    public class ToDoItemViewModel : IToDoViewModel, INotifyPropertyChanged
     {
         public string Name {  get; set; }
         public string Description { get; set; }
@@ -29,9 +36,17 @@ namespace ToDoApplication.ViewModels
 
     public class ToDoItemsViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<ToDoItemViewModel> Items { get; } = new ObservableCollection<ToDoItemViewModel>();
+        public ObservableCollection<IToDoViewModel> Items { get; } = new ObservableCollection<IToDoViewModel>();
+
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ToDoEntryViewModel TaskEntry { get; } = new ToDoEntryViewModel();
+
+        public ToDoItemsViewModel() 
+        {
+            Items.Add(TaskEntry);
+        }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

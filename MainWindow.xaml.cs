@@ -17,13 +17,13 @@ namespace ToDoApplication
         private readonly IMongoDatabase database;
         private readonly ToDoItemRepository todoItemRepository;
         private readonly StatusItemRepository statusItemRepository;
-        public ToDoItemsViewModel ViewModel { get; set; }
+        public ToDoItemsViewModel ToDoItemsViewModel { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new ToDoItemsViewModel();
-            DataContext = ViewModel;
+            ToDoItemsViewModel = new ToDoItemsViewModel();
+            DataContext = this;
 
             database = App.Database;
 
@@ -39,9 +39,10 @@ namespace ToDoApplication
         private async void LoadData(ToDoItemRepository repository)
         {
             var items = await repository.GetAllAsync();
+            
             foreach (var item in items)
             {
-                ViewModel.Items.Add(new ToDoItemViewModel
+                ToDoItemsViewModel.Items.Add(new ToDoItemViewModel
                 {
                     Name = item.Name,
                     Description = item.Description,

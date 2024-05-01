@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ToDoApplication" xmlns:local1="clr-namespace:ToDoApplication.Views"
         mc:Ignorable="d"
-        FontFamily="{StaticResource Nunito}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        FontFamily="{DynamicResource Nunito}"
         Background="{StaticResource backgroundColor}"
         Title="ToDo" Height="{x:Static SystemParameters.PrimaryScreenHeight}" Width="{x:Static SystemParameters.PrimaryScreenWidth}">
     <Grid>
@@ -21,7 +22,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Content Control to switch between views -->
-        <local1:ToDoListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding ViewModel.Items}"/>
+        <!-- Content Control to switch between views  <local1:NewTaskView Grid.Column="1" Grid.Row="1"/>
+        <local1:ToDoListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Items}"/> -->
+        <local1:NewTaskView Grid.Column="1" Grid.Row="1"/>
     </Grid>
 </Window>

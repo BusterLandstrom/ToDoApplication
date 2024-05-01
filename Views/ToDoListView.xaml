@@ -7,12 +7,13 @@
              xmlns:parent="clr-namespace:ToDoApplication"
              xmlns:variables="clr-namespace:ToDoApplication.VariableControllers"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}"
-             d:DesignWidth="1920"
+             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ToDoItemsViewModel}"
+             d:DesignWidth="1920" Background="Transparent"
              d:DesignHeight="1080">
     <UserControl.Resources>
         <!-- TaskItem template -->
         <DataTemplate x:Key="TaskItemTemplate">
-            <Border Background="LightGray" CornerRadius="5" Margin="5">
+            <Border Background="{DynamicResource selectableColor}" CornerRadius="5" Margin="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -51,13 +52,13 @@
 
         <!-- Task Entry Template -->
         <DataTemplate x:Key="TaskEntryTemplate">
-            <Grid>
-                <Rectangle Fill="LightBlue" RadiusX="5" RadiusY="5"/>
+            <Grid HorizontalAlignment="Stretch">
+                <Rectangle Fill="{DynamicResource selectableColor}" RadiusX="10" RadiusY="10"/>
                 <TextBox Text="Enter new task name and press Enter..."
-                     Foreground="Gray"
-                     HorizontalAlignment="Center" VerticalAlignment="Center"
-                     FontSize="16" Margin="5"
-                     BorderThickness="1" BorderBrush="{StaticResource widgetColor}"/>
+                     Foreground="{DynamicResource textColor}"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                     FontSize="16" Margin="5" Background="Transparent"
+                     BorderThickness="0"/>
             </Grid>
         </DataTemplate>
 
@@ -67,14 +68,37 @@
                                 TaskEntryTemplate="{StaticResource TaskEntryTemplate}"/>
     </UserControl.Resources>
     <Grid>
-        <ListView ItemsSource="{Binding ToDoItems}" 
+        <ListView ItemsSource="{Binding Items}" 
                   Background="Transparent" 
                   BorderBrush="Transparent"
-                  Margin="20">
-            <!-- Set the ItemTemplateSelector -->
-            <ListView.ItemTemplateSelector>
-                <variables:TaskTemplateSelector/>
-            </ListView.ItemTemplateSelector>
+                  Margin="20"
+                  ItemTemplateSelector="{StaticResource TaskSelector}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Height" Value="70"/>
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
 </UserControl>

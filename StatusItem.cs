@@ -8,11 +8,18 @@ namespace ToDoApplication
     public class StatusItem
     {
         public ObjectId Id { get; set; }
-        public List<Status> Statuses { get; set; } = new List<Status>() {
-                                                    new Status { statusText = "To Do", colorValue = "#E9B44C" },
-                                                    new Status { statusText = "In Progress", colorValue = "#7692FF" },
-                                                    new Status { statusText = "Done", colorValue = "#008148" }
-                                                        };
+        public List<Status> Statuses { get; set; } = new List<Status>();
+
+        public StatusItem()
+        {
+            // Add default statuses if the list is empty
+            if (Statuses.Count == 0)
+            {
+                Statuses.Add(new Status { statusText = "To Do", colorValue = "#E9B44C" });
+                Statuses.Add(new Status { statusText = "In Progress", colorValue = "#7692FF" });
+                Statuses.Add(new Status { statusText = "Done", colorValue = "#008148" });
+            }
+        }
 
         public void AddStatus(Status status)
         {

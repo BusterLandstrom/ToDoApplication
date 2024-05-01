@@ -4,18 +4,95 @@
              xmlns:local="clr-namespace:ToDoApplication"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <FontFamily x:Key="Nunito">Assets/Fonts/Nunito.ttf</FontFamily>
-        <Style TargetType="Button" x:Key="RoundButton">
+
+    <!-- 
+        Custom Items:
+    -->
+
+
+        <!-- Widget template -->
+        <Style TargetType="UserControl" x:Key="WidgetTemplate">
+
+            <!-- Variables -->
+
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            
+            <!-- Set default width -->
+            <Setter Property="Width" Value="Auto"/>
+            <!-- Set default height -->
+            <Setter Property="Height" Value="Auto"/>
+
+            <!-- Template -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="UserControl">
+                        <Border Background="{DynamicResource widgetColor}" CornerRadius="10"
+                        Width="{Binding ActualWidth, ElementName=MainGrid}"
+                        Height="{Binding ActualHeight, ElementName=MainGrid}">
+                            <ContentPresenter Margin="10"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+
+        <!-- 
+        Custom Styles:
+    -->
+
+        <!-- Button Style -->
+        <Style x:Key="RoundButton" TargetType="{x:Type Button}" >
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Style.Resources>
+            <Setter Property="Background" Value="{DynamicResource selectableColor}"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
         </Style>
+
+        <!-- GridViewColumnHeader Style -->
+        <Style x:Key="CustomHeader" TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Grid>
+                            <Border x:Name="HeaderBorder" Background="Transparent">
+                                <ContentPresenter x:Name="HeaderContent"
+                          RecognizesAccessKey="True"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+    <!-- 
+        Custom Variables:
+    -->
+
+        <!-- Colors -->
         <SolidColorBrush x:Key="backgroundColor" Color="#DEE2D6"/>
         <SolidColorBrush x:Key="textColor" Color="#040F0F"/>
         <SolidColorBrush x:Key="widgetColor" Color="#BBDDCF"/>
         <SolidColorBrush x:Key="selectableColor" Color="#DE6449"/>
+        
+        <!-- FontFamily -->
+        <FontFamily x:Key="Nunito">Assets/Fonts/Nunito.ttf</FontFamily>
 
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Application.Resources>
 </Application>

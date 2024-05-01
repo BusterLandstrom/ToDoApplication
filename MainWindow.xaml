@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ToDoApplication"
+        xmlns:local="clr-namespace:ToDoApplication" xmlns:local1="clr-namespace:ToDoApplication.Views"
         mc:Ignorable="d"
         FontFamily="{StaticResource Nunito}"
         Background="{StaticResource backgroundColor}"
@@ -11,27 +11,17 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Content="+ New" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="25" Width="100" Height="45" Style="{DynamicResource RoundButton}" Background="{StaticResource selectableColor}" Foreground="{StaticResource textColor}"/>
-
-        <ListView Grid.Column="1" Grid.Row="1" FontSize="30" Background="{StaticResource widgetColor}" x:Name="ToDoList" Foreground="{StaticResource textColor}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Done" DisplayMemberBinding="{Binding Done}" Width="150"/>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="400"/>
-                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}" Width="850"/>
-                    <GridViewColumn Header="Steps" DisplayMemberBinding="{Binding Steps}" Width="136"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
+        <!-- Content Control to switch between views -->
+        <local1:ToDoListView Grid.Column="1" Grid.Row="1"/>
     </Grid>
 </Window>

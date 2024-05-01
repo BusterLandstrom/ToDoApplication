@@ -13,7 +13,7 @@ namespace ToDoApplication
         public Status Status { get; set; }
         public bool Done { get; set; } = false;
         public List<Step> Steps { get; set; }
-        public List<Status> StepStatusVariables { get; set; }
+        public void SetDone(Status done) { Done = true; Status = done; }
     }
 
     public class ToDoItemRepository

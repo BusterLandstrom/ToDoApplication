@@ -15,11 +15,46 @@
         <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="ToggleButton">
             <Grid Width="Auto" Height="Auto">
                 <!-- Dot representation -->
-                <Rectangle x:Name="Dot" Fill="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}"  RadiusX="10" RadiusY="10" Width="20" Height="20"/>
-                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,10"/>
+                <Rectangle x:Name="Dot" Fill="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}"
+                           RadiusX="10" RadiusY="10" Width="Auto" Height="20"
+                           RenderTransformOrigin="0,0.5">
+                    <Rectangle.RenderTransform>
+                        <ScaleTransform/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,10,0"/>
             </Grid>
             <ControlTemplate.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.9" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
                 <Trigger Property="ToggleButton.IsMouseOver" Value="True">
+                    <Setter Property="Content">
+                        <!-- Bind the Content to the selected status text -->
+                        <Setter.Value>
+                            <Binding Path="SelectedStatus.statusText" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
                     <Setter TargetName="Dot" Property="Width" Value="Auto"/>
                     <Setter TargetName="Dot" Property="Height" Value="20"/>
                     <Setter Property="Content">
@@ -29,25 +64,8 @@
                         </Setter.Value>
                     </Setter>
                 </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="Dot" Property="Width" Value="Auto"/>
-                    <Setter TargetName="Dot" Property="Height" Value="20"/>
-                </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
-        <!-- Define Popup for Dropdown Items -->
-        <Popup x:Key="StatusPopup" Placement="Bottom" StaysOpen="False" Width="200" Height="200">
-            <ComboBox ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedStatus}" Foreground="White" Background="Red" BorderThickness="0">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="5" Margin="2" Background="{Binding colorValue}">
-                            <TextBlock Text="{Binding statusText}" Padding="5"/>
-                        </Border>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </Popup>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -72,27 +90,52 @@
         <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="50" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.."/>
 
         <!-- Status Dropdown -->
-        <ToggleButton x:Name="DropDownButton" Margin="10" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left">
+        <ToggleButton x:Name="DropDownButton" Margin="10" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="{Binding ElementName=StatusPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource BoolInverter}}">
             <ToggleButton.Style>
                 <Style TargetType="ToggleButton">
-                    <Setter Property="Template" Value="{StaticResource DropDownButtonTemplate}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
-                    <Setter Property="FontSize" Value="10"/>
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource StringToColorConverter}">
-                                <Binding Path="DataContext.SelectedStatus.colorValue" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                <!-- Add more bindings if needed -->
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
+                <Setter Property="Template" Value="{StaticResource DropDownButtonTemplate}"/>
+                <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource StringToColorConverter}">
+                            <Binding Path="DataContext.SelectedStatus.colorValue" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                            <!-- Add more bindings if needed -->
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             </ToggleButton.Style>
         </ToggleButton>
+
+        <!-- Define Popup for Dropdown Items -->
+        <Popup x:Name="StatusPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=DropDownButton}" StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=DropDownButton}" AllowsTransparency="True">
+            <ListView ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedStatus}" Foreground="{StaticResource textColor}" Background="Transparent" BorderThickness="0">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="0,3,3,3"/>
+                        <Setter Property="FontSize" Value="10"/>
+                        <Setter Property="Height" Value="20"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Grid>
+                                        <Rectangle Fill="{Binding colorValue}" RadiusX="10" RadiusY="10" Width="{Binding ActualWidth, ElementName=TextBlockStatusText}" HorizontalAlignment="Left"/>
+                                        <TextBlock x:Name="TextBlockStatusText" Text="{Binding statusText}" Padding="10,0,10,0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Popup>
 
         <!-- Description -->
         <Label Grid.Row="2" Grid.Column="1" Content="Description:" FontSize="35" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>

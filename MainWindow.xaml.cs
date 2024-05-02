@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using ToDoApplication.Items;
 using ToDoApplication.ViewModels;
+using ToDoApplication.Views;
 
 namespace ToDoApplication
 {
@@ -65,7 +66,7 @@ namespace ToDoApplication
             var statusItemsExist = await EnsureCollectionExists("StatusItems");
 
             var statusCollectionEmpty = await IsCollectionEmpty("StatusItems");
-            if (statusCollectionEmpty) 
+            if (statusCollectionEmpty)
             {
                 StatusItem newStatusItem = new StatusItem();
 
@@ -75,9 +76,37 @@ namespace ToDoApplication
                 {
                     Debug.WriteLine($"Added status '{status.statusText}' with the color value '{status.colorValue}'");
                 }
+
+                StatusItemRepository statusItemRepo = new StatusItemRepository(database);
+            }
+            else
+            {
+
+                StatusItemRepository statusItemRepo = new StatusItemRepository(database);
+
+                /*foreach (Status status in statusItemRepository.)
+                {
+                    Debug.WriteLine($"Loaded status '{status.statusText}' with the color value '{status.colorValue}'");
+                }*/
+
             }
 
-            
+
+            var statuses = await statusItemRepository.GetAllStatusesAsync();
+
+            // Pass the statuses to the NewTaskViewModel
+            var newTaskViewModel = new NewTaskViewModel();
+            newTaskViewModel.StatusList = new ObservableCollection<Status>(statuses);
+            newTaskViewModel.SelectedStatus = newTaskViewModel.StatusList[0];
+            // Set DataContext of NewTaskView to the NewTaskViewModel instance
+            var newTaskView = new NewTaskView();
+
+            newTaskView.SetDataContext(newTaskViewModel);
+
+            // Add the newTaskView to the mainwindow (This is just for debugging purposes and will need to be re-worked later)
+
+            WidgetPlacement.Children.Add(newTaskView);
+
         }
 
         private async Task<bool> EnsureCollectionExists(string collectionName)
@@ -99,11 +128,6 @@ namespace ToDoApplication
             var collection = database.GetCollection<BsonDocument>(collectionName);
             var count = await collection.CountDocumentsAsync(FilterDefinition<BsonDocument>.Empty);
             return count == 0;
-        }
-
-        private async Task CreateCollection(string collectionName)
-        {
-            await database.CreateCollectionAsync(collectionName);
         }
     }
 }

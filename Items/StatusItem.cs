@@ -65,5 +65,18 @@ namespace ToDoApplication.Items
         {
             await collection.DeleteOneAsync(i => i.Id == id);
         }
+
+        public async Task<List<Status>> GetAllStatusesAsync()
+        {
+            var statusItems = await collection.Find(_ => true).ToListAsync();
+            var statuses = new List<Status>();
+
+            foreach (var statusItem in statusItems)
+            {
+                statuses.AddRange(statusItem.Statuses);
+            }
+
+            return statuses;
+        }
     }
 }

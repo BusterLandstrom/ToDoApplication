@@ -24,6 +24,8 @@
 
         <!-- Content Control to switch between views  <local1:NewTaskView Grid.Column="1" Grid.Row="1"/>
         <local1:ToDoListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Items}"/> -->
-        <local1:NewTaskView Grid.Column="1" Grid.Row="1"/>
+        <Grid Grid.Row="1" Grid.Column="1" x:Name="WidgetPlacement">
+            
+        </Grid>
     </Grid>
 </Window>

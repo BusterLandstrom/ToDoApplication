@@ -112,7 +112,7 @@
         </Style>
 
 
-        <!-- 
+    <!-- 
         Custom Variables:
     -->
 
@@ -124,7 +124,10 @@
         
         <!-- FontFamily -->
         <FontFamily x:Key="Nunito">Assets\Fonts\Nunito.ttf#Nunito</FontFamily>
-
+        
+        
+        <!-- Variable Controllers -->
         <variable:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <variable:StringToColorConverter x:Key="StringToColorConverter" />
     </Application.Resources>
 </Application>

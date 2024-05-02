@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ToDoApplication.Items;
+using ToDoApplication.ViewModels;
 
 namespace ToDoApplication.Views
 {
@@ -23,6 +26,17 @@ namespace ToDoApplication.Views
         public NewTaskView()
         {
             InitializeComponent();
+        }
+
+        public void SetDataContext(NewTaskViewModel newTaskViewModel) 
+        {
+            this.DataContext = newTaskViewModel;
+        }
+
+
+        public void PrintStatusItems() 
+        {
+            // Print all status items loaded into the view
         }
     }
 }

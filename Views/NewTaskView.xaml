@@ -4,21 +4,64 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ToDoApplication.Views"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:viewmodels="clr-namespace:ToDoApplication.ViewModels"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}" Background="{DynamicResource widgetColor}"
+             FontFamily="{DynamicResource Nunito}"
              d:DesignWidth="1920"
              d:DesignHeight="1080">
+    <UserControl.Resources>
+        <FrameworkElement x:Key="PE" x:Name="ProxyElement" Visibility="Collapsed" DataContext="{Binding}"/>
+        <!-- Define ControlTemplate for Dropdown Button -->
+        <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="ToggleButton">
+            <Grid Width="Auto" Height="Auto">
+                <!-- Dot representation -->
+                <Rectangle x:Name="Dot" Fill="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}"  RadiusX="10" RadiusY="10" Width="20" Height="20"/>
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,10"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="ToggleButton.IsMouseOver" Value="True">
+                    <Setter TargetName="Dot" Property="Width" Value="Auto"/>
+                    <Setter TargetName="Dot" Property="Height" Value="20"/>
+                    <Setter Property="Content">
+                        <!-- Bind the Content to the selected status text -->
+                        <Setter.Value>
+                            <Binding Path="SelectedStatus.statusText" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Dot" Property="Width" Value="Auto"/>
+                    <Setter TargetName="Dot" Property="Height" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Define Popup for Dropdown Items -->
+        <Popup x:Key="StatusPopup" Placement="Bottom" StaysOpen="False" Width="200" Height="200">
+            <ComboBox ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedStatus}" Foreground="White" Background="Red" BorderThickness="0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border CornerRadius="5" Margin="2" Background="{Binding colorValue}">
+                            <TextBlock Text="{Binding statusText}" Padding="5"/>
+                        </Border>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Popup>
+    </UserControl.Resources>
 
     <Grid Margin="20">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1.5*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10*"/>
@@ -26,35 +69,44 @@
         </Grid.RowDefinitions>
 
         <!-- Task Name -->
-        <Label Grid.Row="0" Content="Name:" FontSize="50" HorizontalAlignment="Right"/>
-        <xctk:WatermarkTextBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="50" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.."/>
+        <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="50" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.."/>
 
-        <!-- Status -->
-        <Label Grid.Row="1" Content="Status:" FontSize="50" HorizontalAlignment="Right"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" Margin="5">
-            <!-- Here you would bind the ComboBox to a collection of Status items -->
-            <!-- Each item in the collection should have properties: StatusName and StatusColor -->
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="2">
-                        <Rectangle Width="15" Height="15" Fill="{Binding StatusColor}"/>
-                        <TextBlock Text="{Binding StatusName}" Margin="5"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <!-- Status Dropdown -->
+        <ToggleButton x:Name="DropDownButton" Margin="10" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <ToggleButton.Style>
+                <Style TargetType="ToggleButton">
+                    <Setter Property="Template" Value="{StaticResource DropDownButtonTemplate}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
+                    <Setter Property="FontSize" Value="10"/>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource StringToColorConverter}">
+                                <Binding Path="DataContext.SelectedStatus.colorValue" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                <!-- Add more bindings if needed -->
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToggleButton.Style>
+        </ToggleButton>
 
         <!-- Description -->
-        <Label Grid.Row="2" Content="Description:" FontSize="50" HorizontalAlignment="Right"/>
-        <xctk:WatermarkTextBox Grid.Row="2" Grid.Column="1" Margin="5" TextWrapping="Wrap" FontSize="20" 
-                 SpellCheck.IsEnabled="True" Language="en-US" Style="{DynamicResource NoMouseOverTextBox}"
-                 BorderBrush="{DynamicResource widgetColor}" Background="{DynamicResource selectableColor}"/>
+        <Label Grid.Row="2" Grid.Column="1" Content="Description:" FontSize="35" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <xctk:WatermarkTextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" TextWrapping="Wrap" FontSize="20" 
+                                SpellCheck.IsEnabled="True" Language="en-US" Style="{DynamicResource NoMouseOverTextBox}"
+                                BorderBrush="{DynamicResource widgetColor}" Background="{DynamicResource selectableColor}"/>
 
         <!-- Steps -->
-        <Label Grid.Row="1" Grid.Column="2" Content="Steps:" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-        <ListBox Grid.Row="2" Grid.Column="2" Margin="5"/>
+        <Label Grid.Row="2" Grid.Column="3" Content="Steps:" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <ListBox Grid.Row="3" Grid.Column="3" Margin="5"/>
 
-        <!-- Button to create new task -->
-        <Button Grid.Row="3" Grid.Column="1" Content="Add +" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="150"/>
+        <!-- Button to save new task -->
+        <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right"/>
+        <!-- Button to remove task -->
+        <Button Grid.Row="4" Grid.Column="3" Content="🗑" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Left"/>
     </Grid>
 </UserControl>

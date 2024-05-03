@@ -87,7 +87,7 @@
         </Grid.RowDefinitions>
 
         <!-- Task Name -->
-        <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="50" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.."/>
+        <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="50" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Watermark="ToDo Name.." Foreground="{DynamicResource textColor}"/>
 
         <!-- Status Dropdown -->
         <ToggleButton x:Name="DropDownButton" Margin="10" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="{Binding ElementName=StatusPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource BoolInverter}}">
@@ -127,7 +127,7 @@
                                 <ControlTemplate TargetType="ListViewItem">
                                     <Grid>
                                         <Rectangle Fill="{Binding colorValue}" RadiusX="10" RadiusY="10" Width="{Binding ActualWidth, ElementName=TextBlockStatusText}" HorizontalAlignment="Left"/>
-                                        <TextBlock x:Name="TextBlockStatusText" Text="{Binding statusText}" Padding="10,0,10,0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto"/>
+                                        <TextBlock x:Name="TextBlockStatusText" Text="{Binding statusText}" Padding="10,0,10,0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Foreground="{DynamicResource textColor}"/>
                                     </Grid>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -138,14 +138,14 @@
         </Popup>
 
         <!-- Description -->
-        <Label Grid.Row="2" Grid.Column="1" Content="Description:" FontSize="35" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Label Grid.Row="2" Grid.Column="1" Content="Description:" FontSize="35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{DynamicResource textColor}"/>
         <xctk:WatermarkTextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" TextWrapping="Wrap" FontSize="20" 
                                 SpellCheck.IsEnabled="True" Language="en-US" Style="{DynamicResource NoMouseOverTextBox}"
-                                BorderBrush="{DynamicResource widgetColor}" Background="{DynamicResource selectableColor}"/>
+                                BorderBrush="{DynamicResource widgetColor}" Background="{DynamicResource selectableColor}" />
 
         <!-- Steps -->
-        <Label Grid.Row="2" Grid.Column="3" Content="Steps:" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-        <ListBox Grid.Row="3" Grid.Column="3" Margin="5"/>
+        <Label Grid.Row="2" Grid.Column="3" Content="Steps:" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="{DynamicResource textColor}"/>
+        <ListBox Grid.Row="3" Grid.Column="3" Margin="5" Background="Transparent" BorderBrush="Transparent"/>
 
         <!-- Button to save new task -->
         <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right"/>

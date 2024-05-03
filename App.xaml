@@ -90,7 +90,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Padding="10,10,10,10">
                             <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -106,7 +106,7 @@
             </Setter>
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="3" />
+                    <Setter Property="CornerRadius" Value="20" />
                 </Style>
             </Style.Resources>
         </Style>
@@ -117,10 +117,10 @@
     -->
 
         <!-- Colors -->
-        <SolidColorBrush x:Key="backgroundColor" Color="#FA7E61"/>
-        <SolidColorBrush x:Key="textColor" Color="#040F0F"/>
-        <SolidColorBrush x:Key="widgetColor" Color="#DEE2D6"/>
-        <SolidColorBrush x:Key="selectableColor" Color="#BBDDCF"/>
+        <SolidColorBrush x:Key="backgroundColor" Color="#FF6B6B"/>
+        <SolidColorBrush x:Key="textColor" Color="#3D405B"/>
+        <SolidColorBrush x:Key="widgetColor" Color="#F4F1DE"/>
+        <SolidColorBrush x:Key="selectableColor" Color="#CFCCB6"/>
         
         <!-- FontFamily -->
         <FontFamily x:Key="Nunito">Assets\Fonts\Nunito.ttf#Nunito</FontFamily>

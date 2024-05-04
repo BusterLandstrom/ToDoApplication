@@ -16,6 +16,8 @@ namespace ToDoApplication.ViewModels
 
         public ICommand SaveTaskCommand { get; set; }
         public ICommand RemoveTaskCommand { get; set; }
+        public ICommand addStep { get; set; }
+        public ICommand toggleStepDone { get; set; }
 
         private ObservableCollection<Status> _statusList;
         public ObservableCollection<Status> StatusList
@@ -63,8 +65,19 @@ namespace ToDoApplication.ViewModels
             }
         }
 
-        private List<Step> _steps;
+        private ObservableCollection<StepViewModel> _stepItems;
 
+        public ObservableCollection<StepViewModel> StepItems 
+        {
+            get { return _stepItems; }
+            set 
+            {
+                _stepItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StepItems)));
+            }
+        }
+
+        private List<Step> _steps;
         public List<Step> Steps 
         {
             get { return _steps; }
@@ -75,14 +88,58 @@ namespace ToDoApplication.ViewModels
             }
         }
 
+        public StepEntry stepEntry { get; set; } = new StepEntry();
 
         public NewTaskViewModel()
         {
             SaveTaskCommand = new RelayCommand(SaveOrAddTask);
             RemoveTaskCommand = new RelayCommand(RemoveTask);
+            toggleStepDone = new RelayTypeCommand<Step>(ToggleDoneStep);
+
+            InitializeNewTask();
         }
 
+        public async void InitializeNewTask() 
+        {
+            // This is just waiting for the task to get all todo items and status items to finish and then converting them to a list useable for the observable list to control the contents of the views
+            var statusItemTask = App.accountManager.GetStatusItems();
+            var satusItemList = await statusItemTask;
 
+
+            // These might be changed to a single function or just handling the properties better
+            StatusList = new ObservableCollection<Status>(satusItemList[0].GetAllStatuses()); // Getting an index of the obs collection might be incorrect since i need to get the index 0 to retrieve the obs collection -- Maybe change and imporve
+            SelectedStatus = StatusList[0];
+        }
+
+        public void LoadIntoView()
+        {
+            TaskName = App.accountManager.currentTodoitem.Name;
+            Description = App.accountManager.currentTodoitem.Description;
+            SelectedStatus = App.accountManager.currentTodoitem.Status;
+            Steps = App.accountManager.currentTodoitem.Steps;
+            StepItems = InitializeSteps();
+        }
+
+        public ObservableCollection<StepViewModel> InitializeSteps()
+        {
+            var stepList = new ObservableCollection<StepViewModel>() { stepEntry };
+            foreach (var step in Steps)
+            {
+                stepList.Add(step);
+            }
+            return stepList;
+        }
+
+        public async Task ToggleDoneStep(Step step) 
+        {
+            foreach (var stepEntry in Steps)
+            {
+                if (step.Id == stepEntry.Id) 
+                {
+                    stepEntry.SetDone();
+                }
+            }
+        }
 
         public async void SaveOrAddTask()
         {
@@ -101,6 +158,8 @@ namespace ToDoApplication.ViewModels
             {
                 await App.accountManager.GetToDoRepo().CreateAsync(App.accountManager.currentTodoitem); // Waiting for creation of the new Todo item into the list
             }
+
+            App.accountManager.mainWindow.UpdateView(1);
         }
 
         public async void RemoveTask() 
@@ -113,6 +172,8 @@ namespace ToDoApplication.ViewModels
             {
                 App.accountManager.currentTodoitem = null;
             }
+
+            App.accountManager.mainWindow.UpdateView(1);
         }
     }
 }

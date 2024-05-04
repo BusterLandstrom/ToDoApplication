@@ -7,9 +7,27 @@
     <Application.Resources>
 
     <!-- 
+        Aminations:   
+    -->
+        
+        
+        <Storyboard x:Key="AnimateWidgetTransition">
+            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0" Storyboard.TargetProperty="Visibility">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimation BeginTime="0:0:0.0" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2"/>
+        </Storyboard>
+
+
+
+
+    <!-- 
         Custom Items:
     -->
-
 
         <!-- Widget template -->
         <Style TargetType="UserControl" x:Key="WidgetTemplate">

@@ -30,7 +30,12 @@ namespace ToDoApplication.Views
 
         public void SetDataContext(NewTaskViewModel newTaskViewModel) 
         {
-            this.DataContext = newTaskViewModel;
+            DataContext = newTaskViewModel;
+        }
+
+        public NewTaskViewModel GetDataContext() 
+        {
+            return (NewTaskViewModel)DataContext;
         }
     }
 }

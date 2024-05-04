@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Xml;
 using ToDoApplication.Items;
+using Xceed.Wpf.Toolkit;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace ToDoApplication.ViewModels
 {
@@ -39,23 +42,40 @@ namespace ToDoApplication.ViewModels
                 if (_items != value)
                 {
                     _items = value;
-                    OnPropertyChanged(nameof(_items));
+                    OnPropertyChanged(nameof(Items));
                 }
             }
         }
 
-        public ICommand createTodo {  get; set; }
-        public ICommand editTodo { get; set; }
+        public ICommand createTask {  get; set; }
+        public ICommand editTask { get; set; }
         public ICommand toggleDone { get; set; }
 
         public ToDoEntryViewModel TaskEntry { get; } = new ToDoEntryViewModel();
 
         public ToDoItemsViewModel() 
         {
-            createTodo = new RelayTypeCommand<string>(CreateTask);
-            editTodo = new RelayTypeCommand<ToDoItem>(EditTask);
+            createTask = new RelayTypeCommand<WatermarkTextBox>(CreateTask);
+            editTask = new RelayTypeCommand<ToDoItem>(EditTask);
             toggleDone = new RelayTypeCommand<ToDoItem>(ToggleDone);
+
+            InitializeTodo();        
+        }
+
+        public async void InitializeTodo() 
+        {
+            if (Items != null)
+            {
+                Items.Clear();
+            }
+
             Items.Add(TaskEntry); // Just adds the entry "add new task" item to the view in the first line of the list
+
+            var todoItemTask = await App.accountManager.GetToDoItems();
+            var todoItemList = todoItemTask;
+
+            InsertDataToView(todoItemList);
+
         }
 
         public void InsertDataToView(List<ToDoItem> itemList)
@@ -64,34 +84,39 @@ namespace ToDoApplication.ViewModels
             {
                 Items.Add(item);
             }
+
         }
 
         // Insert functions to compute and handle the management of the steps calculation etc for the items in Items
 
-        public static async void CreateTask(string todoName) 
+        public static async void CreateTask(WatermarkTextBox todoTextbox) 
         {
-            var statusItems = await App.accountManager.GetStatusItems();
-            var todoStatus = statusItems[0].GetStatus(0);
-            App.accountManager.currentTodoitem = new ToDoItem
+            if (todoTextbox != null)
             {
-                Name = todoName,
-                Description = "",
-                Status = todoStatus,
-                Done = false,
-                Steps = new List<Step>(),
-                StepsDone = 0,
-                TotalSteps = 0
-            };
-            App.accountManager.SetItemView();
+                string todoName = todoTextbox.Text;
+                var statusItems = await App.accountManager.GetStatusItems();
+                var todoStatus = statusItems[0].GetStatus(0); // Gets the "To do" status in the database (This should be made more flexible)
+                App.accountManager.currentTodoitem = new ToDoItem
+                {
+                    Name = todoName,
+                    Description = "",
+                    Status = todoStatus,
+                    Done = false,
+                    Steps = new List<Step>(),
+                    StepsDone = 0,
+                    TotalSteps = 0
+                };
+                App.accountManager.mainWindow.UpdateView(2);
+            }
         }
 
         public static void EditTask(ToDoItem item) 
         {
             App.accountManager.currentTodoitem = item;
-            App.accountManager.SetItemView();
+            App.accountManager.mainWindow.UpdateView(2);
         }
 
-        public async void ToggleDone(ToDoItem item) 
+        public async void ToggleDone(ToDoItem item)
         {
             foreach (var toDoItem in Items) 
             {

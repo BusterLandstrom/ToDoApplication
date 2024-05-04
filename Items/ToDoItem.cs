@@ -93,7 +93,6 @@ namespace ToDoApplication.Items
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            Debug.WriteLine("Property has changed");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ToDoApplication.Items;
 using ToDoApplication.ViewModels;
+using ZstdSharp.Unsafe;
 
 namespace ToDoApplication.Views
 {
@@ -30,35 +31,12 @@ namespace ToDoApplication.Views
 
         public void SetDataContex(ToDoItemsViewModel todoItemsViewModel) 
         {
-            this.DataContext = todoItemsViewModel;
+            DataContext = todoItemsViewModel;
         }
 
-        // These will be fixed and actaully added once implemented better (currently handled in the XAML code)
-        //private void NewTaskTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        //{
-        //    if (NewTaskTextBox.Text == "Enter new task name...")
-        //    {
-        //        NewTaskTextBox.Text = string.Empty;
-        //        NewTaskTextBox.Foreground = Brushes.Black;
-        //    }
-        //}
-
-        //private void NewTaskTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        //{
-        //    if (string.IsNullOrWhiteSpace(NewTaskTextBox.Text))
-        //    {
-        //        NewTaskTextBox.Text = "Enter new task name...";
-        //        NewTaskTextBox.Foreground = Brushes.Gray;
-        //    }
-        //}
-
-        //private void NewTaskTextBox_KeyDown(object sender, KeyEventArgs e)
-        //{
-        //    if (e.Key == Key.Enter)
-        //    {
-        //        string newTaskName = NewTaskTextBox.Text;
-        //        // Add logic to handle adding a new task here
-        //    }
-        //}
+        public ToDoItemsViewModel GetDataContex() 
+        {
+            return (ToDoItemsViewModel)DataContext;
+        }
     }
 }

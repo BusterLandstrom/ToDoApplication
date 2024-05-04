@@ -39,14 +39,21 @@
                         </Path>
                     </Grid>
 
-                    <!-- Name of ToDoItem {Binding Done, Converter={StaticResource BooleanToVisibilityConverter}} -->
-                    <TextBlock Grid.Column="1" Margin="10,5,5,5" VerticalAlignment="Center" x:Name="ItemName" Text="{Binding Name}" FontSize="20" Foreground="{DynamicResource textColor}"/>
+                    <!-- Name of ToDoItem -->
+                    <TextBlock Grid.Column="1" Margin="10,5,5,5" VerticalAlignment="Center" x:Name="ItemName" Text="{Binding Name}" FontSize="20" Foreground="{DynamicResource textColor}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.editTask, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                        </TextBlock.InputBindings>
+                    </TextBlock>
 
                     <!-- Status Color Dot (Might be improved to also be able to toggle the statusText) -->
                     <Ellipse Width="15" Height="15" Grid.Column="2" Margin="5">
                         <Ellipse.Fill>
                             <Binding Path="Status.colorValue" Converter="{StaticResource SingleStringToColorConverter}"/>
                         </Ellipse.Fill>
+                        <Ellipse.ToolTip>
+                            <Binding Path="Status.statusText"/>
+                        </Ellipse.ToolTip>
                     </Ellipse>
 
                     <!-- Steps Done / Total Steps -->
@@ -67,11 +74,15 @@
         <DataTemplate x:Key="TaskEntryTemplate">
             <Grid HorizontalAlignment="Stretch" Margin="10">
                 <Rectangle Fill="{DynamicResource widgetColor}" RadiusX="10" RadiusY="10"/>
-                <xctk:WatermarkTextBox Watermark="Enter new task name and press Enter..."
+                <xctk:WatermarkTextBox Watermark="New task"
                      Foreground="{DynamicResource textColor}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                     FontSize="16" Margin="10,5,5,5" Background="Transparent"
-                     BorderThickness="0"/>
+                     FontSize="16" Margin="20,5,5,5" Background="Transparent"
+                     BorderThickness="0" x:Name="EnterText">
+                    <xctk:WatermarkTextBox.InputBindings>
+                        <KeyBinding Command="{Binding DataContext.createTask, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ElementName=EnterText}" Key="Return"/>
+                    </xctk:WatermarkTextBox.InputBindings>
+                </xctk:WatermarkTextBox>
             </Grid>
         </DataTemplate>
 

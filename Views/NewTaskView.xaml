@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:parent="clr-namespace:ToDoApplication"
              xmlns:local="clr-namespace:ToDoApplication.Views"
+             xmlns:variables="clr-namespace:ToDoApplication.VariableControllers"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:viewmodels="clr-namespace:ToDoApplication.ViewModels"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}" Background="{DynamicResource widgetColor}"
              FontFamily="{DynamicResource Nunito}"
@@ -67,6 +68,45 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+
+        <DataTemplate x:Key="StepEntryTemplate">
+            <Grid HorizontalAlignment="Stretch" Margin="10">
+                <Rectangle Fill="{DynamicResource selectableColor}" RadiusX="10" RadiusY="10"/>
+                <xctk:WatermarkTextBox Watermark="New step..."
+                     Foreground="{DynamicResource textColor}"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                     FontSize="10" Margin="10,5,5,5" Background="Transparent"
+                     BorderThickness="0" x:Name="StepEntry">    
+                    <xctk:WatermarkTextBox.InputBindings>
+                        <KeyBinding Command="{Binding DataContext.addStep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ElementName=StepEntry}" Key="Return"/>
+                    </xctk:WatermarkTextBox.InputBindings>
+                </xctk:WatermarkTextBox>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="StepItemTemplate">
+            <!-- Done Checkmark -->
+            <Grid Width="20" Height="20" Margin="10,5,5,5">
+                <Ellipse Fill="White" Stroke="Black" StrokeThickness="1">
+                    <Ellipse.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                        <!-- Turns task done -->
+                    </Ellipse.InputBindings>
+                </Ellipse>
+                <Path Data="M0,7 L5,12 L13,0" Stroke="Black" StrokeThickness="2"
+              HorizontalAlignment="Center" VerticalAlignment="Center"
+              Visibility="{Binding Done, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Path.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                        <!-- Turns task done -->
+                    </Path.InputBindings>
+                </Path>
+            </Grid>
+        </DataTemplate>
+
+        <variables:StepTemplateSelector x:Key="StepSelector"
+                                        StepEntryTemplate="{StaticResource StepEntryTemplate}"
+                                        StepItemTemplate="{StaticResource StepItemTemplate}"/>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -105,10 +145,6 @@
                             </MultiBinding>
                         </Setter.Value>
                     </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                        </Trigger>
-                    </Style.Triggers>
                 </Style>
             </ToggleButton.Style>
         </ToggleButton>
@@ -151,6 +187,6 @@
         <!-- Button to save task -->
         <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right" Command="{Binding SaveTaskCommand}"/>
         <!-- Button to remove task -->
-        <Button Grid.Row="4" Grid.Column="3" Content="🗑" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Left"/>
+        <Button Grid.Row="4" Grid.Column="3" Content="🗑" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Left" Command="{Binding RemoveTaskCommand}"/>
     </Grid>
 </UserControl>

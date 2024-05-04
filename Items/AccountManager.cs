@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Animation;
 
 namespace ToDoApplication.Items
@@ -39,7 +40,7 @@ namespace ToDoApplication.Items
 
         public ToDoItem? currentTodoitem { get; set; }
 
-        public int currentView { get; set; } // Currently this might be a bad way of handling the views maybe change in the future (Loading view = 0 (Not done yet), Home/List view = 1, Edit/New view = 2)
+        public MainWindow mainWindow { get; set; }
 
         public AccountManager()
         {
@@ -188,6 +189,12 @@ namespace ToDoApplication.Items
             return todoItems.Result;
         }
 
+        public async Task UpdateCollections() 
+        {
+            todoItems = todoItemRepository.GetAllAsync();
+            statusItems = statusItemRepository.GetAllAsync();
+        }
+
         private async Task<bool> EnsureCollectionExists(string collectionName)
         {
             var filter = new BsonDocument("name", collectionName);
@@ -220,21 +227,6 @@ namespace ToDoApplication.Items
             }
 
             return false;
-        }
-
-        public void SetHomeView() 
-        {
-            currentView = 1;
-        }
-
-        public void SetItemView()
-        {
-            currentView = 2;
-        }
-
-        public void SetLoadView()
-        {
-            currentView = 0;
         }
 
         public void CreateBlankTask(string TaskName, string Description, Status SelectedStatus) 

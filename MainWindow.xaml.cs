@@ -91,11 +91,13 @@ namespace ToDoApplication
 
             }
 
+            var tasks = await todoItemRepository.GetAllAsync();
+
 
             var statuses = await statusItemRepository.GetAllStatusesAsync();
 
             // Pass the statuses to the NewTaskViewModel
-            var newTaskViewModel = new NewTaskViewModel();
+            var newTaskViewModel = new NewTaskViewModel(todoItemRepository);
             newTaskViewModel.StatusList = new ObservableCollection<Status>(statuses);
             newTaskViewModel.SelectedStatus = newTaskViewModel.StatusList[0];
             // Set DataContext of NewTaskView to the NewTaskViewModel instance

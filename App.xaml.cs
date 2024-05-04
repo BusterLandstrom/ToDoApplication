@@ -13,23 +13,14 @@ namespace ToDoApplication
     /// </summary>
     public partial class App : Application
     {
-        public static IMongoDatabase Database { get; private set; }
+
+        public static AccountManager accountManager { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            AccountManager account = new AccountManager();
-            account.SetAccount();
-            string connectionUri = account.GetURI();
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-
-            settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-
-            var client = new MongoClient(settings);
-
-            string accountDatabase = account.GetDatabase();
-            Database = client.GetDatabase(accountDatabase);
+            accountManager = new AccountManager(); // Creating and connecting the database connection and account manager for the mongodb database
         }
 
     }

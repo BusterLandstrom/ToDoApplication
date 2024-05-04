@@ -32,11 +32,5 @@ namespace ToDoApplication.Views
         {
             this.DataContext = newTaskViewModel;
         }
-
-
-        public void PrintStatusItems() 
-        {
-            // Print all status items loaded into the view
-        }
     }
 }

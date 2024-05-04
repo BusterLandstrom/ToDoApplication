@@ -1,12 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 
 namespace ToDoApplication.Items
 {
@@ -18,9 +22,24 @@ namespace ToDoApplication.Items
         private string password { get; set; } = "None";
         private string application { get; set; } = "None";
         private string connectionUri { get; set; } = "None";
+        private MongoClient client {  get; set; }
+        private MongoClientSettings clientSettings { get; set; }
         private bool success { get; set; } = false;
-        private string database { get; set; } = "ToDo";
-        private List<string> databaseCollections { get; set; } = new List<string>() { "Items", "Status" };
+        private static IMongoDatabase Database { get; set; }
+        private string databaseName { get; set; } = "ToDo";
+        private List<string> databaseCollections { get; set; } = new List<string>() { "ToDoItems", "StatusItems" };
+
+        private ToDoItemRepository todoItemRepository { get; set; }
+
+        private StatusItemRepository statusItemRepository { get; set; }
+
+        // These two comming variables might need do get removed or rewored depending on how i handle the initialization of the collections and the loading of the items
+        private Task<List<ToDoItem>> todoItems {  get; set; } // This one ^^
+        private Task<List<StatusItem>> statusItems { get; set; } // This one ^^
+
+        public ToDoItem? currentTodoitem { get; set; }
+
+        public int currentView { get; set; } // Currently this might be a bad way of handling the views maybe change in the future (Loading view = 0 (Not done yet), Home/List view = 1, Edit/New view = 2)
 
         public AccountManager()
         {
@@ -28,22 +47,30 @@ namespace ToDoApplication.Items
             if (success)
             {
                 SetURI();
+                ConnectDatabase();
+                todoItemRepository = new ToDoItemRepository(Database);
+                statusItemRepository = new StatusItemRepository(Database);
             }
         }
 
-        public string GetItemCollection()
+        public string GetToDoCollectionName()
         {
-            return databaseCollections[0];
+            return databaseCollections[0]; 
         }
 
-        public string GetStatusCollection()
+        public string GetStatusCollectionName()
         {
             return databaseCollections[1];
         }
 
-        public string GetDatabase()
+        public string GetDatabaseName()
         {
-            return database;
+            return databaseName;
+        }
+
+        public void SetDatabaseName(string name)
+        {
+            databaseName = name;
         }
 
         public bool SetAccount()
@@ -89,9 +116,139 @@ namespace ToDoApplication.Items
             return connectionUri;
         }
 
+        public void ConnectDatabase() 
+        {
+            clientSettings = MongoClientSettings.FromConnectionString(connectionUri);
 
+            clientSettings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
+            client = new MongoClient(clientSettings);
 
+            Database = client.GetDatabase(databaseName);
+        }
+
+        public IMongoDatabase GetClientDatabase() 
+        {
+            return Database;
+        }
+
+        public ToDoItemRepository GetToDoRepo()
+        {
+            return todoItemRepository;
+        }
+        public StatusItemRepository GetStatusRepo()
+        {
+            return statusItemRepository;
+        }
+
+        public async Task InitializeCollections()
+        {
+            // Check if collections exist
+            var toDoItemsExist = await EnsureCollectionExists(GetToDoCollectionName());
+            var statusItemsExist = await EnsureCollectionExists(GetStatusCollectionName());
+
+            var statusCollectionEmpty = await IsCollectionEmpty(GetStatusCollectionName());
+            if (statusCollectionEmpty)
+            {
+                StatusItem newStatusItem = new StatusItem();
+
+                await statusItemRepository.CreateAsync(newStatusItem);
+
+                foreach (Status status in newStatusItem.Statuses)
+                {
+                    Debug.WriteLine($"Added status '{status.statusText}' with the color value '{status.colorValue}'");
+                }
+            }
+            else
+            {
+
+                /*foreach (Status status in statusItemRepository.)
+                {
+                    Debug.WriteLine($"Loaded status '{status.statusText}' with the color value '{status.colorValue}'");
+                }*/
+
+            }
+
+            todoItems =  todoItemRepository.GetAllAsync();
+            statusItems = statusItemRepository.GetAllAsync();
+        }
+
+        public Task<List<StatusItem>> GetStatusItems() 
+        {
+            return statusItems;
+        }
+
+        public Task<List<ToDoItem>> GetToDoItems() // Convert to use function underneath in all of the scripts
+        {
+            return todoItems;
+        }
+
+        public List<ToDoItem> GetToDoItemList()
+        {
+            return todoItems.Result;
+        }
+
+        private async Task<bool> EnsureCollectionExists(string collectionName)
+        {
+            var filter = new BsonDocument("name", collectionName);
+            var collectionsCursor = await Database.ListCollectionNamesAsync(new ListCollectionNamesOptions { Filter = filter });
+            var collectionExists = await collectionsCursor.AnyAsync();
+
+            if (!collectionExists)
+            {
+                await Database.CreateCollectionAsync(collectionName);
+            }
+
+            return collectionExists;
+        }
+
+        public async Task<bool> IsCollectionEmpty(string collectionName)
+        {
+            var collection = Database.GetCollection<BsonDocument>(collectionName);
+            var count = await collection.CountDocumentsAsync(FilterDefinition<BsonDocument>.Empty);
+            return count == 0;
+        }
+
+        public bool ToDoItemExists() 
+        {
+            foreach (ToDoItem item in GetToDoItemList()) 
+            {
+                if (currentTodoitem.Id == item.Id)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void SetHomeView() 
+        {
+            currentView = 1;
+        }
+
+        public void SetItemView()
+        {
+            currentView = 2;
+        }
+
+        public void SetLoadView()
+        {
+            currentView = 0;
+        }
+
+        public void CreateBlankTask(string TaskName, string Description, Status SelectedStatus) 
+        {
+            currentTodoitem = new ToDoItem
+            {
+                Name = TaskName,
+                Description = Description,
+                Status = SelectedStatus,
+                Done = false,
+                Steps = new List<Step>() // This is just creating an empty steps i need to create the steps items first
+
+            };
+        }
 
 
     }

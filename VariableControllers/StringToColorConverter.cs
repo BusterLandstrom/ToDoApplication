@@ -30,4 +30,24 @@ namespace ToDoApplication.VariableControllers
             throw new NotSupportedException();
         }
     }
+
+    public class SingleStringToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string colorValue && !string.IsNullOrEmpty(colorValue))
+            {
+                // Convert color string to SolidColorBrush
+                return new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
+            }
+
+            // Return default color if value is not valid
+            return Brushes.White; // Or any other default color
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

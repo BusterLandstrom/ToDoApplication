@@ -94,22 +94,22 @@
         <ToggleButton x:Name="DropDownButton" Margin="10" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="{Binding ElementName=StatusPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource BoolInverter}}">
             <ToggleButton.Style>
                 <Style TargetType="ToggleButton">
-                <Setter Property="Template" Value="{StaticResource DropDownButtonTemplate}"/>
-                <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
-                <Setter Property="FontSize" Value="10"/>
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource StringToColorConverter}">
-                            <Binding Path="DataContext.SelectedStatus.colorValue" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                            <!-- Add more bindings if needed -->
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsChecked" Value="True">
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
+                    <Setter Property="Template" Value="{StaticResource DropDownButtonTemplate}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
+                    <Setter Property="FontSize" Value="10"/>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource StringToColorConverter}">
+                                <Binding Path="DataContext.SelectedStatus.colorValue" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                <!-- Add more bindings if needed -->
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
             </ToggleButton.Style>
         </ToggleButton>
 
@@ -149,7 +149,7 @@
         <ListBox Grid.Row="3" Grid.Column="3" Margin="5" Background="Transparent" BorderBrush="Transparent" />
 
         <!-- Button to save task -->
-        <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right" Command="{Binding AddTaskCommand}"/>
+        <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right" Command="{Binding SaveTaskCommand}"/>
         <!-- Button to remove task -->
         <Button Grid.Row="4" Grid.Column="3" Content="🗑" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Left"/>
     </Grid>

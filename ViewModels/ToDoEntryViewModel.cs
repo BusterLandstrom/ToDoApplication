@@ -10,6 +10,6 @@ namespace ToDoApplication.ViewModels
     {
         public string TaskName { get; set; }
 
-        // Additional properties and methods as needed
+        // Add funciton to creata a new task by using this entry item
     }
 }

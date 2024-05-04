@@ -3,18 +3,19 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Windows.Input;
+using System.Xml.Linq;
 using ToDoApplication.Items;
 
 namespace ToDoApplication.ViewModels
 {
-    public class NewTaskViewModel : INotifyPropertyChanged
+    public class NewTaskViewModel : INotifyPropertyChanged // I think I might refactor and rename all items to fit this porperty
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ToDoItemRepository todoItemRepository { get; set; }
-
-        public ICommand AddTaskCommand { get; set; }
+        public ICommand SaveTaskCommand { get; set; }
+        public ICommand RemoveTaskCommand { get; set; }
 
         private ObservableCollection<Status> _statusList;
         public ObservableCollection<Status> StatusList
@@ -75,26 +76,43 @@ namespace ToDoApplication.ViewModels
         }
 
 
-        public NewTaskViewModel( ToDoItemRepository repo)
+        public NewTaskViewModel()
         {
-            todoItemRepository = repo;
-            AddTaskCommand = new RelayCommand(AddTask);
-
+            SaveTaskCommand = new RelayCommand(SaveOrAddTask);
+            RemoveTaskCommand = new RelayCommand(RemoveTask);
         }
 
-        public void AddTask()
+
+
+        public async void SaveOrAddTask()
         {
-            var newTodo = new ToDoItem
+            App.accountManager.currentTodoitem.Name = TaskName;
+            App.accountManager.currentTodoitem.Description = Description;
+            App.accountManager.currentTodoitem.Status = SelectedStatus;
+            App.accountManager.currentTodoitem.Done = App.accountManager.currentTodoitem.IsDone();
+            App.accountManager.currentTodoitem.Steps = Steps;
+            App.accountManager.currentTodoitem.StepsDone = App.accountManager.currentTodoitem.GetStepsDone();
+            App.accountManager.currentTodoitem.TotalSteps = App.accountManager.currentTodoitem.GetStepsTotal();
+            if (App.accountManager.ToDoItemExists())
             {
-                Name = TaskName,
-                Description = Description,
-                Status = SelectedStatus,
-                Done = false,
-                Steps = new List<Step>() // This is just creating an empty steps i need to create the steps items first :)
+                await App.accountManager.GetToDoRepo().UpdateAsync(App.accountManager.currentTodoitem.Id, App.accountManager.currentTodoitem); // Waiting for the update of the todo item
+            }
+            else
+            {
+                await App.accountManager.GetToDoRepo().CreateAsync(App.accountManager.currentTodoitem); // Waiting for creation of the new Todo item into the list
+            }
+        }
 
-            };
-
-            todoItemRepository.CreateAsync(newTodo);
+        public async void RemoveTask() 
+        {
+            if (App.accountManager.ToDoItemExists())
+            {
+                await App.accountManager.GetToDoRepo().DeleteAsync(App.accountManager.currentTodoitem.Id); // Waiting for the update of the todo item it might be null but it technically couldnt be null if this view is visible but ill  need to handle it later anyway
+            }
+            else 
+            {
+                App.accountManager.currentTodoitem = null;
+            }
         }
     }
 }

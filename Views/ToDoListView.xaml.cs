@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ToDoApplication.Items;
 using ToDoApplication.ViewModels;
 
 namespace ToDoApplication.Views
@@ -11,15 +12,15 @@ namespace ToDoApplication.Views
     /// </summary>
     public partial class ToDoListView : UserControl
     {
-        public IEnumerable<ToDoItemViewModel> ItemsSource
+        public IEnumerable<ToDoItem> ItemsSource
         {
-            get { return (IEnumerable<ToDoItemViewModel>)GetValue(ItemsSourceProperty); }
+            get { return (IEnumerable<ToDoItem>)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ItemsSource. This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ToDoItemViewModel>), typeof(ToDoListView), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ToDoItem>), typeof(ToDoListView), new PropertyMetadata(null));
 
 
         public ToDoListView()
@@ -27,7 +28,12 @@ namespace ToDoApplication.Views
             InitializeComponent();
         }
 
-        // Remove these event handlers since they are now defined in XAML
+        public void SetDataContex(ToDoItemsViewModel todoItemsViewModel) 
+        {
+            this.DataContext = todoItemsViewModel;
+        }
+
+        // These will be fixed and actaully added once implemented better (currently handled in the XAML code)
         //private void NewTaskTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         //{
         //    if (NewTaskTextBox.Text == "Enter new task name...")

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ToDoApplication.Items
 {
-    public class StatusItem
+    public class StatusItem // Container for all status items (I still have this function because I might want to sort and handle stuff in another way in the future)  <--  I will merge the tatus item stuff onto here
     {
         public ObjectId Id { get; set; }
         public List<Status> Statuses { get; set; } = new List<Status>();
@@ -29,6 +29,16 @@ namespace ToDoApplication.Items
         public void RemoveStatus(Status status)
         {
             Statuses.Remove(status);
+        }
+
+        public Status GetStatus(int index) 
+        {
+            return Statuses[index];
+        }
+
+        public List<Status> GetAllStatuses() 
+        {
+            return Statuses;
         }
     }
 
@@ -64,19 +74,6 @@ namespace ToDoApplication.Items
         public async Task DeleteAsync(ObjectId id)
         {
             await collection.DeleteOneAsync(i => i.Id == id);
-        }
-
-        public async Task<List<Status>> GetAllStatusesAsync()
-        {
-            var statusItems = await collection.Find(_ => true).ToListAsync();
-            var statuses = new List<Status>();
-
-            foreach (var statusItem in statusItems)
-            {
-                statuses.AddRange(statusItem.Statuses);
-            }
-
-            return statuses;
         }
     }
 }

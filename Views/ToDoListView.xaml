@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ToDoApplication.Views"
              xmlns:parent="clr-namespace:ToDoApplication"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:variables="clr-namespace:ToDoApplication.VariableControllers"
              mc:Ignorable="d" Style="{StaticResource WidgetTemplate}"
-             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ToDoItemsViewModel}"
              d:DesignWidth="1920" Background="Transparent"
              d:DesignHeight="1080">
     <UserControl.Resources>
         <!-- TaskItem template -->
         <DataTemplate x:Key="TaskItemTemplate">
-            <Border Background="{DynamicResource widgetColor}" CornerRadius="5" Margin="5">
+            <Border Background="{DynamicResource widgetColor}" CornerRadius="10" Margin="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -23,18 +23,31 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Done Checkmark -->
-                    <Grid Width="30" Height="30" Margin="5">
-                        <Ellipse Fill="#008148" Stroke="Black" StrokeThickness="1"/>
-                        <Path Data="M0,7 L5,12 L13,0" Stroke="White" StrokeThickness="2"
+                    <Grid Width="20" Height="20" Margin="10,5,5,5">
+                        <Ellipse Fill="White" Stroke="Black" StrokeThickness="1">
+                            <Ellipse.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/> <!-- Turns task done -->
+                            </Ellipse.InputBindings>
+                        </Ellipse>
+                        <Path Data="M0,7 L5,12 L13,0" Stroke="Black" StrokeThickness="2"
                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                              Visibility="{Binding Done, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                              Visibility="{Binding Done, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Path.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                                <!-- Turns task done -->
+                            </Path.InputBindings>
+                        </Path>
                     </Grid>
 
-                    <!-- Name of ToDoItem -->
-                    <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource textColor}"/>
+                    <!-- Name of ToDoItem {Binding Done, Converter={StaticResource BooleanToVisibilityConverter}} -->
+                    <TextBlock Grid.Column="1" Margin="10,5,5,5" VerticalAlignment="Center" x:Name="ItemName" Text="{Binding Name}" FontSize="20" Foreground="{DynamicResource textColor}"/>
 
-                    <!-- Status Color Dot -->
-                    <Ellipse Fill="{Binding StatusColor}" Width="15" Height="15" Grid.Column="2" Margin="5"/>
+                    <!-- Status Color Dot (Might be improved to also be able to toggle the statusText) -->
+                    <Ellipse Width="15" Height="15" Grid.Column="2" Margin="5">
+                        <Ellipse.Fill>
+                            <Binding Path="Status.colorValue" Converter="{StaticResource SingleStringToColorConverter}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
 
                     <!-- Steps Done / Total Steps -->
                     <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource textColor}">
@@ -52,9 +65,9 @@
 
         <!-- Task Entry Template -->
         <DataTemplate x:Key="TaskEntryTemplate">
-            <Grid HorizontalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" Margin="10">
                 <Rectangle Fill="{DynamicResource widgetColor}" RadiusX="10" RadiusY="10"/>
-                <TextBox Text="Enter new task name and press Enter..."
+                <xctk:WatermarkTextBox Watermark="Enter new task name and press Enter..."
                      Foreground="{DynamicResource textColor}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
                      FontSize="16" Margin="10,5,5,5" Background="Transparent"

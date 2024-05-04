@@ -129,6 +129,7 @@
         <!-- Variable Controllers -->
         <variable:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <variable:StringToColorConverter x:Key="StringToColorConverter" />
+        <variable:SingleStringToColorConverter x:Key="SingleStringToColorConverter"/>
         <variable:BoolInverter x:Key="BoolInverter" />
     </Application.Resources>
 </Application>

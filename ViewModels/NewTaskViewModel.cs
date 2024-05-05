@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -7,6 +8,7 @@ using System.Security.Policy;
 using System.Windows.Input;
 using System.Xml.Linq;
 using ToDoApplication.Items;
+using Xceed.Wpf.Toolkit;
 
 namespace ToDoApplication.ViewModels
 {
@@ -18,6 +20,7 @@ namespace ToDoApplication.ViewModels
         public ICommand RemoveTaskCommand { get; set; }
         public ICommand addStep { get; set; }
         public ICommand toggleStepDone { get; set; }
+        public ICommand changeStepName { get; set; }
 
         private ObservableCollection<Status> _statusList;
         public ObservableCollection<Status> StatusList
@@ -95,6 +98,8 @@ namespace ToDoApplication.ViewModels
             SaveTaskCommand = new RelayCommand(SaveOrAddTask);
             RemoveTaskCommand = new RelayCommand(RemoveTask);
             toggleStepDone = new RelayTypeCommand<Step>(ToggleDoneStep);
+            addStep = new RelayTypeCommand<WatermarkTextBox>(AddStep);
+            //changeStepName = new RelayTypeCommand<WatermarkTextBox>(ChangeStepName);
 
             InitializeNewTask();
         }
@@ -122,6 +127,10 @@ namespace ToDoApplication.ViewModels
 
         public ObservableCollection<StepViewModel> InitializeSteps()
         {
+            if (StepItems != null) 
+            {
+                StepItems.Clear();
+            }
             var stepList = new ObservableCollection<StepViewModel>() { stepEntry };
             foreach (var step in Steps)
             {
@@ -130,15 +139,41 @@ namespace ToDoApplication.ViewModels
             return stepList;
         }
 
-        public async Task ToggleDoneStep(Step step) 
+        public async void ToggleDoneStep(Step step) 
         {
             foreach (var stepEntry in Steps)
             {
                 if (step.Id == stepEntry.Id) 
                 {
-                    stepEntry.SetDone();
+                    stepEntry.ToggleDone();
+                    break;
                 }
             }
+        }
+
+        public async void ChangeStepName(WatermarkTextBox stepNameTextbox, Step step) 
+        {
+            
+        }
+
+        public async void AddStep(WatermarkTextBox stepTextbox) 
+        {
+
+            var statusItems = await App.accountManager.GetStatusItems();
+            var doneStatus = statusItems[0];
+            var databaseDoneStatus = doneStatus.GetStatus(0); // This is just the "To do" status from the database it is bad to do it this way not valid at all so I need to fix it later!!
+            Status newStepStatus = databaseDoneStatus;
+            Step newStep = new Step()
+            {
+                Id = ObjectId.GenerateNewId(),
+                StepName = stepTextbox.Text,
+                StepDone = false,
+                StepStatus = newStepStatus
+            };
+
+            App.accountManager.currentTodoitem.Steps.Add(newStep);
+            App.accountManager.currentTodoitem.UpdateItem();
+            StepItems = InitializeSteps();
         }
 
         public async void SaveOrAddTask()

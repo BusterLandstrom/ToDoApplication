@@ -32,11 +32,57 @@ namespace ToDoApplication.Items
 
         public ObjectId Id { get; set; }
 
-        public string stepName { get; set; }
-        public bool stepDone { get; set; }
-        public Status stepStatus { get; set; }
+        private string _stepName;
+        public string StepName 
+        {
+            get {  return _stepName; }
+            set 
+            {
+                _stepName = value;
+                OnPropertyChanged(nameof(StepName));
+            }
+        }
+        private bool _stepDone;
+        public bool StepDone 
+        {
+            get { return _stepDone; }
+            set 
+            {
+                _stepDone = value;
+                OnPropertyChanged(nameof(StepDone));
+            }
+        }
+        private Status _stepStatus;
+        public Status StepStatus 
+        {
+            get { return _stepStatus; }
+            set 
+            {
+                _stepStatus = value;
+                OnPropertyChanged(nameof(StepStatus));
+            }
+        }
 
-        public void SetDone() { stepDone = true; stepStatus = App.accountManager.; }
+        public async void ToggleDone() 
+        {
+            StepDone = !StepDone;
+            if (StepDone == true)
+            {
+                var statusItems = await App.accountManager.GetStatusItems();
+                var doneStatus = statusItems[0];
+                var databaseDoneStatus = doneStatus.GetStatus(2); // This is just the "Done" status from the database it is bad to do it this way not valid at all so I need to fix it later!!
+                StepStatus = databaseDoneStatus;
+            }
+            else
+            {
+                var statusItems = await App.accountManager.GetStatusItems();
+                var doneStatus = statusItems[0];
+                var databaseDoneStatus = doneStatus.GetStatus(0); // This is just the "To do" status from the database it is bad to do it this way not valid at all so I need to fix it later!!
+                StepStatus = databaseDoneStatus;
+            }
+
+            App.accountManager.currentTodoitem.UpdateItem();
+        }
     }
 
     public class StepEntry : StepViewModel

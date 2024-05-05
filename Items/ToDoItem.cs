@@ -127,7 +127,7 @@ namespace ToDoApplication.Items
             UpdateItem();
         }
 
-        private async void UpdateItem() 
+        public async void UpdateItem() 
         {
             await App.accountManager.GetToDoRepo().UpdateAsync(Id, this);
         }
@@ -137,7 +137,7 @@ namespace ToDoApplication.Items
             var doneCounter = 0;
             foreach (var step in Steps) 
             {
-                if (step.stepDone == true) { doneCounter++; }
+                if (step.StepDone == true) { doneCounter++; }
             }
             return doneCounter;
         }

@@ -12,7 +12,6 @@
              d:DesignWidth="1920"
              d:DesignHeight="1080">
     <UserControl.Resources>
-        <FrameworkElement x:Key="PE" x:Name="ProxyElement" Visibility="Collapsed" DataContext="{Binding}"/>
         <!-- Define ControlTemplate for Dropdown Button -->
         <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="ToggleButton">
             <Grid Width="Auto" Height="Auto">
@@ -85,23 +84,46 @@
         </DataTemplate>
 
         <DataTemplate x:Key="StepItemTemplate">
-            <!-- Done Checkmark -->
-            <Grid Width="20" Height="20" Margin="10,5,5,5">
-                <Ellipse Fill="White" Stroke="Black" StrokeThickness="1">
-                    <Ellipse.InputBindings>
-                        <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
-                        <!-- Turns task done -->
-                    </Ellipse.InputBindings>
-                </Ellipse>
-                <Path Data="M0,7 L5,12 L13,0" Stroke="Black" StrokeThickness="2"
+            <Border Background="{DynamicResource selectableColor}" CornerRadius="10" Margin="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Done Checkmark -->
+                    <Grid Width="20" Height="20" Margin="10,5,5,5" Grid.Column="0">
+                        <Ellipse Fill="White" Stroke="Black" StrokeThickness="1">
+                            <Ellipse.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleStepDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                                <!-- Turns step done -->
+                            </Ellipse.InputBindings>
+                        </Ellipse>
+                        <Path Data="M0,7 L5,12 L13,0" Stroke="Black" StrokeThickness="2"
               HorizontalAlignment="Center" VerticalAlignment="Center"
-              Visibility="{Binding Done, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Path.InputBindings>
-                        <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
-                        <!-- Turns task done -->
-                    </Path.InputBindings>
-                </Path>
-            </Grid>
+              Visibility="{Binding StepDone, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Path.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.toggleStepDone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                                <!-- Turns step done -->
+                            </Path.InputBindings>
+                        </Path>
+                    </Grid>
+                    <TextBox Grid.Column="1" Text="{Binding StepName}" FontSize="13" Background="Transparent" BorderBrush="Transparent" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                        <TextBox.InputBindings> <!-- Fix to add mouse binding -->
+                            <KeyBinding Command="{Binding DataContext.changeStepName, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" Key="Return"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <!-- Status Color Dot (Might be improved to also be able to toggle the statusText) -->
+                    <Ellipse Width="15" Height="15" Grid.Column="2" Margin="5">
+                        <Ellipse.Fill>
+                            <Binding Path="StepStatus.colorValue" Converter="{StaticResource SingleStringToColorConverter}"/>
+                        </Ellipse.Fill>
+                        <Ellipse.ToolTip>
+                            <Binding Path="StepStatus.statusText"/>
+                        </Ellipse.ToolTip>
+                    </Ellipse>
+                </Grid>
+            </Border>
         </DataTemplate>
 
         <variables:StepTemplateSelector x:Key="StepSelector"
@@ -182,7 +204,39 @@
 
         <!-- Steps -->
         <Label Grid.Row="2" Grid.Column="3" Content="Steps:" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="{DynamicResource textColor}"/>
-        <ListBox Grid.Row="3" Grid.Column="3" Margin="5" Background="Transparent" BorderBrush="Transparent" />
+        <ListView Grid.Row="3" Grid.Column="3" ItemsSource="{Binding StepItems}"
+          Background="Transparent" 
+          BorderBrush="Transparent"
+          Margin="20"
+          ItemTemplateSelector="{StaticResource StepSelector}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Foreground" Value="{DynamicResource textColor}"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Height" Value="70"/>
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
 
         <!-- Button to save task -->
         <Button Grid.Row="4" Grid.Column="2" Content="💾" Margin="5" FontSize="45" Style="{DynamicResource RoundButton}" Width="100" HorizontalAlignment="Right" Command="{Binding SaveTaskCommand}"/>

@@ -18,19 +18,16 @@ A simple and interactive To-Do List application built using WPF (Windows Present
 
 ## Installation
 
-1. **Clone the repository**:
+1. **Download software from releases** [Releases](https://github.com/BusterLandstrom/ToDoApplication/releases)
 
-    ```bash
-    git clone https://github.com/BusterLandstrom/ToDoApplication.git
-    ```
+2. **Add json file to AppData/Local/ToDo folder called account.json**
+**Format like this**:
+  `{
+    "user": "mongodb-username",
+    "password": "mongodb-password",
+    "mongodbpath": "@link.path.mongodb.net/?retryWrites=true&w=majority&appName=mongodb-appname"
+    }`
 
-2. **Open the project** in your preferred C# IDE (such as Visual Studio).
-
-3. **Restore dependencies** using NuGet Package Manager.
-
-4. **Build and run** the project.
-
-(Release package will be added)
 
 ## Usage
 

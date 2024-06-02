@@ -22,11 +22,13 @@ A simple and interactive To-Do List application built using WPF (Windows Present
 
 2. **Add json file to AppData/Local/ToDo folder called account.json**
 **Format like this**:
-  `{
-    "user": "mongodb-username",
-    "password": "mongodb-password",
-    "mongodbpath": "@link.path.mongodb.net/?retryWrites=true&w=majority&appName=mongodb-appname"
-    }`
+```json
+    {
+        "user": "mongodb-username",
+        "password": "mongodb-password",
+        "mongodbpath": "@link.path.mongodb.net/?retryWrites=true&w=majority&appName=mongodb-appname"
+    }
+```
 
 
 ## Usage

@@ -29,14 +29,14 @@
                 <EventTrigger RoutedEvent="MouseEnter">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.04" Duration="0:0:0.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
                 <EventTrigger RoutedEvent="MouseLeave">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.9" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -74,7 +74,7 @@
                 <xctk:WatermarkTextBox Watermark="New step..."
                      Foreground="{DynamicResource textColor}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                     FontSize="10" Margin="10,5,5,5" Background="Transparent"
+                     FontSize="13" Margin="10,5,5,5" Background="Transparent"
                      BorderThickness="0" x:Name="StepEntry">    
                     <xctk:WatermarkTextBox.InputBindings>
                         <KeyBinding Command="{Binding DataContext.addStep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ElementName=StepEntry}" Key="Return"/>
@@ -108,20 +108,21 @@
                             </Path.InputBindings>
                         </Path>
                     </Grid>
-                    <TextBox Grid.Column="1" Text="{Binding StepName}" FontSize="13" Background="Transparent" BorderBrush="Transparent" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
-                        <TextBox.InputBindings> <!-- Fix to add mouse binding -->
-                            <KeyBinding Command="{Binding DataContext.changeStepName, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" Key="Return"/>
+                    <TextBox x:Name="StepNameEntry" Grid.Column="1" Text="{Binding StepName}" FontSize="13" Background="Transparent" BorderBrush="Transparent" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                        <TextBox.InputBindings>
+                            <!-- Fix to add mouse binding -->
+                            <MouseBinding Command="{Binding DataContext.selectStep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                            <KeyBinding Command="{Binding DataContext.changeStepName, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ElementName=StepNameEntry}" Key="Return"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <!-- Status Color Dot (Might be improved to also be able to toggle the statusText) -->
-                    <Ellipse Width="15" Height="15" Grid.Column="2" Margin="5">
-                        <Ellipse.Fill>
-                            <Binding Path="StepStatus.colorValue" Converter="{StaticResource SingleStringToColorConverter}"/>
-                        </Ellipse.Fill>
-                        <Ellipse.ToolTip>
-                            <Binding Path="StepStatus.statusText"/>
-                        </Ellipse.ToolTip>
-                    </Ellipse>
+                    <!-- Trash Button -->
+                    <Button Content="&#x1F5D1;" FontSize="15" Grid.Column="2" Margin="5"
+                            Command="{Binding DataContext.removeStep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                            CommandParameter="{Binding}" Style="{StaticResource RoundButton}">
+                        <Button.ToolTip>
+                            <TextBlock Text="Remove step" />
+                        </Button.ToolTip>
+                    </Button>
                 </Grid>
             </Border>
         </DataTemplate>

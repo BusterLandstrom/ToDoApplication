@@ -39,6 +39,7 @@ namespace ToDoApplication.Items
         private Task<List<StatusItem>> statusItems { get; set; } // This one ^^
 
         public ToDoItem? currentTodoitem { get; set; }
+        public Step? currentStepitem { get; set; }
 
         public MainWindow mainWindow { get; set; }
 

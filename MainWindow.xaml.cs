@@ -77,6 +77,11 @@ namespace ToDoApplication
                         ((Storyboard)FindResource("AnimateWidgetTransition")).Begin(currentControl);
                         WidgetPlacement.Children.Add(currentControl);
                         break;
+                    case 3: // 2 but without animation
+                        newTaskView.GetDataContext().LoadIntoView();
+                        currentControl = newTaskView;
+                        WidgetPlacement.Children.Add(currentControl);
+                        break;
                 }
             }
         }

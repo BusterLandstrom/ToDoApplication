@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
 using ToDoApplication.Items;
@@ -21,6 +23,8 @@ namespace ToDoApplication.ViewModels
         public ICommand addStep { get; set; }
         public ICommand toggleStepDone { get; set; }
         public ICommand changeStepName { get; set; }
+        public ICommand selectStep { get; set; }
+        public ICommand removeStep { get; set; }
 
         private ObservableCollection<Status> _statusList;
         public ObservableCollection<Status> StatusList
@@ -99,7 +103,9 @@ namespace ToDoApplication.ViewModels
             RemoveTaskCommand = new RelayCommand(RemoveTask);
             toggleStepDone = new RelayTypeCommand<Step>(ToggleDoneStep);
             addStep = new RelayTypeCommand<WatermarkTextBox>(AddStep);
-            //changeStepName = new RelayTypeCommand<WatermarkTextBox>(ChangeStepName);
+            selectStep = new RelayTypeCommand<Step>(SelectStep);
+            removeStep = new RelayTypeCommand<Step>(RemoveStep);
+            changeStepName = new RelayTypeCommand<TextBox>(ChangeStepName);
 
             InitializeNewTask();
         }
@@ -151,9 +157,26 @@ namespace ToDoApplication.ViewModels
             }
         }
 
-        public async void ChangeStepName(WatermarkTextBox stepNameTextbox, Step step) 
+        public async void SelectStep(Step selectedStep)
         {
-            
+            App.accountManager.currentStepitem = selectedStep;
+        }
+
+        // The two adjacent functions are for redundancy so you can save steps by pressing enter on them and close the window without having to save the task
+        public async void ChangeStepName(TextBox stepNameTextbox)
+        {
+            App.accountManager.currentStepitem.StepName = stepNameTextbox.Text;
+
+            var currentTodoitem = App.accountManager.currentTodoitem;
+            for (int i = 0; i < currentTodoitem.Steps.Count; i++)
+            {
+                if (currentTodoitem.Steps[i].Id == App.accountManager.currentStepitem.Id)
+                {
+                    currentTodoitem.Steps[i] = App.accountManager.currentStepitem;
+                    await App.accountManager.GetToDoRepo().UpdateAsync(App.accountManager.currentTodoitem.Id, App.accountManager.currentTodoitem); // Waiting for the update of the todo item
+                    break;
+                }
+            }
         }
 
         public async void AddStep(WatermarkTextBox stepTextbox) 
@@ -174,6 +197,21 @@ namespace ToDoApplication.ViewModels
             App.accountManager.currentTodoitem.Steps.Add(newStep);
             App.accountManager.currentTodoitem.UpdateItem();
             StepItems = InitializeSteps();
+        }
+
+        public async void RemoveStep(Step step)
+        {
+            var currentTodoitem = App.accountManager.currentTodoitem;
+            for (int i = 0; i < currentTodoitem.Steps.Count; i++)
+            {
+                if (currentTodoitem.Steps[i].Id == step.Id)
+                {
+                    currentTodoitem.Steps.RemoveAt(i);
+                    await App.accountManager.GetToDoRepo().UpdateAsync(App.accountManager.currentTodoitem.Id, App.accountManager.currentTodoitem); // Waiting for the update of the todo item
+                    App.accountManager.mainWindow.UpdateView(3);
+                    break;
+                }
+            }
         }
 
         public async void SaveOrAddTask()
@@ -208,7 +246,7 @@ namespace ToDoApplication.ViewModels
                 App.accountManager.currentTodoitem = null;
             }
 
-            App.accountManager.mainWindow.UpdateView(1);
+            App.accountManager.mainWindow.UpdateView(1); // Changes to regular view
         }
     }
 }
